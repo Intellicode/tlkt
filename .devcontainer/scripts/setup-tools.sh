@@ -121,87 +121,33 @@ echo "Setting up GitHub CLI extensions..."
 gh extension install github/gh-copilot 2>/dev/null || echo "gh-copilot extension will be available after 'gh auth login'"
 
 # -----------------------------------------------------------------------------
-# Configure Neovim
+# Configure Neovim (LazyVim)
 # -----------------------------------------------------------------------------
-echo "Configuring Neovim..."
+echo "Configuring Neovim (LazyVim)..."
 
-mkdir -p "${HOME}/.config/nvim"
+NVIM_CONFIG_DIR="${HOME}/.config/nvim"
+NVIM_DATA_DIR="${HOME}/.local/share/nvim"
+NVIM_STATE_DIR="${HOME}/.local/state/nvim"
+NVIM_CACHE_DIR="${HOME}/.cache/nvim"
 
-cat > "${HOME}/.config/nvim/init.lua" << 'NVIM_CONFIG'
--- =============================================================================
--- AI Dev Container - Neovim Configuration
--- Minimal but functional setup with LSP support
--- =============================================================================
+if [ -d "${NVIM_CONFIG_DIR}" ] && [ -f "${NVIM_CONFIG_DIR}/lazyvim.json" ]; then
+    echo "LazyVim already configured at ${NVIM_CONFIG_DIR}"
+elif [ -d "${NVIM_CONFIG_DIR}" ] && [ "$(ls -A "${NVIM_CONFIG_DIR}")" ]; then
+    NVIM_BACKUP_DIR="${HOME}/.config/nvim.backup.$(date +%Y%m%d%H%M%S)"
+    echo "Backing up existing Neovim config to ${NVIM_BACKUP_DIR}"
+    mv "${NVIM_CONFIG_DIR}" "${NVIM_BACKUP_DIR}"
+fi
 
--- Basic settings
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 2
-vim.opt.tabstop = 2
-vim.opt.smartindent = true
-vim.opt.wrap = false
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undofile = true
-vim.opt.undodir = vim.fn.expand("~/.local/share/nvim/undo")
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
-vim.opt.termguicolors = true
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
-vim.opt.updatetime = 50
-vim.opt.colorcolumn = "100"
-vim.opt.clipboard = "unnamedplus"
-vim.opt.mouse = "a"
+if [ ! -d "${NVIM_CONFIG_DIR}" ]; then
+    git clone https://github.com/LazyVim/starter "${NVIM_CONFIG_DIR}"
+    rm -rf "${NVIM_CONFIG_DIR}/.git"
+fi
 
--- Leader key
-vim.g.mapleader = " "
+mkdir -p "${NVIM_DATA_DIR}" "${NVIM_STATE_DIR}" "${NVIM_CACHE_DIR}"
 
--- Key mappings
-vim.keymap.set("n", "<leader>e", vim.cmd.Ex, { desc = "Open file explorer" })
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down centered" })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up centered" })
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next search centered" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search centered" })
-
--- Visual mode: move selected lines
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
-
--- Better paste (doesn't overwrite register)
-vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste without overwrite" })
-
--- Copy to system clipboard
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]], { desc = "Copy to clipboard" })
-vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = "Copy line to clipboard" })
-
--- Delete without yanking
-vim.keymap.set({"n", "v"}, "<leader>d", [["_d]], { desc = "Delete without yank" })
-
--- Quick fix navigation
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz", { desc = "Previous quickfix" })
-
--- Search and replace word under cursor
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search/replace word" })
-
--- Make file executable
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = "Make executable" })
-
--- Colorscheme (built-in)
-vim.cmd.colorscheme("habamax")
-
--- Netrw settings (file explorer)
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
-
-print("Neovim ready! Use :help for documentation")
-NVIM_CONFIG
-
-# Create undo directory
-mkdir -p "${HOME}/.local/share/nvim/undo"
+if command -v nvim >/dev/null 2>&1; then
+    nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 || echo "Run 'nvim' once to complete plugin installation"
+fi
 
 # -----------------------------------------------------------------------------
 # Configure Git
