@@ -1,0 +1,202 @@
+# =============================================================================
+# Starship Prompt Configuration
+# AI Dev Container - Clean, informative, fast
+# =============================================================================
+
+# Timeout for commands (ms)
+command_timeout = 1000
+
+# Newline between prompts
+add_newline = true
+
+# Prompt format
+format = """
+$username$hostname$directory$git_branch$git_status$git_state\
+$nodejs$python$rust$golang$deno$bun\
+$docker_context$kubernetes\
+$cmd_duration$jobs$status\
+$line_break\
+$character"""
+
+# Right-side prompt
+right_format = """$time"""
+
+# -----------------------------------------------------------------------------
+# Core Modules
+# -----------------------------------------------------------------------------
+
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[>](bold red)"
+vimcmd_symbol = "[<](bold green)"
+
+[username]
+style_user = "bold blue"
+style_root = "bold red"
+format = "[$user]($style) "
+show_always = false
+
+[hostname]
+ssh_only = true
+format = "@ [$hostname](bold yellow) "
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+format = "[$path]($style)[$read_only]($read_only_style) "
+read_only = " ro"
+read_only_style = "red"
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration](bold yellow) "
+show_milliseconds = false
+
+[jobs]
+symbol = "+"
+style = "bold blue"
+threshold = 1
+
+[status]
+disabled = false
+format = "[$symbol$status]($style) "
+symbol = "x "
+style = "bold red"
+
+[time]
+disabled = false
+format = "[$time]($style)"
+style = "dimmed white"
+time_format = "%H:%M"
+
+# -----------------------------------------------------------------------------
+# Git
+# -----------------------------------------------------------------------------
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+format = "on [$symbol$branch(:$remote_branch)]($style) "
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold red"
+conflicted = "="
+ahead = ">"
+behind = "<"
+diverged = "<>"
+up_to_date = ""
+untracked = "?"
+stashed = "$"
+modified = "!"
+staged = "+"
+renamed = "r"
+deleted = "x"
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bold yellow"
+
+# -----------------------------------------------------------------------------
+# Languages & Runtimes
+# -----------------------------------------------------------------------------
+
+[nodejs]
+symbol = "node "
+style = "bold green"
+format = "[$symbol($version )]($style)"
+detect_files = ["package.json", ".node-version", ".nvmrc"]
+detect_folders = ["node_modules"]
+version_format = "v${raw}"
+
+[python]
+symbol = "py "
+style = "bold yellow"
+format = '[$symbol($version )(\($virtualenv\) )]($style)'
+detect_files = ["requirements.txt", "pyproject.toml", "setup.py", "Pipfile", ".python-version"]
+version_format = "${raw}"
+
+[rust]
+symbol = "rs "
+style = "bold red"
+format = "[$symbol($version )]($style)"
+detect_files = ["Cargo.toml"]
+version_format = "${raw}"
+
+[golang]
+symbol = "go "
+style = "bold cyan"
+format = "[$symbol($version )]($style)"
+detect_files = ["go.mod", "go.sum", "go.work"]
+version_format = "${raw}"
+
+[deno]
+symbol = "deno "
+style = "bold green"
+format = "[$symbol($version )]($style)"
+detect_files = ["deno.json", "deno.jsonc", "mod.ts", "deps.ts"]
+version_format = "${raw}"
+
+[bun]
+symbol = "bun "
+style = "bold yellow"
+format = "[$symbol($version )]($style)"
+detect_files = ["bun.lockb", "bunfig.toml"]
+version_format = "${raw}"
+
+# -----------------------------------------------------------------------------
+# Cloud & Infrastructure
+# -----------------------------------------------------------------------------
+
+[docker_context]
+symbol = "docker "
+style = "bold blue"
+format = "[$symbol$context]($style) "
+only_with_files = true
+detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile", "compose.yml", "compose.yaml"]
+
+[kubernetes]
+symbol = "k8s "
+style = "bold blue"
+format = '[$symbol$context( \($namespace\))]($style) '
+disabled = false
+detect_files = ["k8s", "kubernetes", "kustomization.yaml", "kustomization.yml"]
+detect_folders = ["charts", "helmfile.yaml"]
+
+[aws]
+symbol = "aws "
+style = "bold yellow"
+format = '[$symbol($profile )(\($region\) )]($style)'
+disabled = true  # Enable if needed
+
+[gcloud]
+symbol = "gcp "
+style = "bold blue"
+format = '[$symbol$account(@$domain)(\($region\))]($style) '
+disabled = true  # Enable if needed
+
+[azure]
+symbol = "az "
+style = "bold blue"
+format = '[$symbol($subscription)]($style) '
+disabled = true  # Enable if needed
+
+# -----------------------------------------------------------------------------
+# Disabled Modules (for performance)
+# -----------------------------------------------------------------------------
+
+[package]
+disabled = true
+
+[battery]
+disabled = true
+
+[memory_usage]
+disabled = true
+
+[env_var]
+disabled = true
+
+[line_break]
+disabled = false

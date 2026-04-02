@@ -1,0 +1,69 @@
+# =============================================================================
+# Docker Build Ignore File
+# Excludes unnecessary files from build context
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+node_modules/
+dist/
+build/
+target/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Environment files (contain secrets)
+.env
+.env.*
+*.env
+!.env.example
+
+# Documentation
+*.md
+!README.md
+docs/
+LICENSE
+
+# Test files
+test/
+tests/
+*_test.go
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Other unnecessary files
+Makefile
+docker-compose*.yml
+*.dockerfile
+!.devcontainer/Dockerfile
